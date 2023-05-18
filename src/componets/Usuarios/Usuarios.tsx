@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable jsx-a11y/alt-text */
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { reqResApi } from "../../api/reqRes"
 import { ReqResListado, Usuario } from "../../interfaces/reqRes"
-import Pagination from "./Pagination"
 
 export const Usuarios = () => {
 const renderItems = (usuario:Usuario)=> {
@@ -19,13 +19,27 @@ const renderItems = (usuario:Usuario)=> {
 }
  
   const [usuarios, setUsuarios] = useState<Usuario[]>([])
-    useEffect(() => {
-        reqResApi.get<ReqResListado>('/users').then(resp=>{
-          return setUsuarios(resp.data.data)
-
-        }).catch(console.log)    
+   const pageRef = useRef(0)
+  
+  useEffect(() => {
+      cargarUsuarios()   
     }, [])
-    //console.log(usuarios)
+
+  const cargarUsuarios= async() =>{
+     const resp = await reqResApi.get<ReqResListado>('/users',{
+      params: {
+        page:pageRef.current
+     }})
+     
+      if(resp.data.data.length>0){
+        pageRef.current ++;
+        console.log(pageRef.current)
+        setUsuarios(resp.data.data)
+      }else{
+        alert('No existe más registros')  
+      }
+  }
+
   return (<>
     <h3>Usuarios</h3>
     <table className="table table-striped">
@@ -41,6 +55,6 @@ const renderItems = (usuario:Usuario)=> {
     {usuarios?.map(renderItems)}
   </tbody>
 </table>
-<Pagination usuarios={usuarios} tasksPerPage={0} totalTasks={0} currentPage={0}  />
-    </>)
+    <button className="page-link"  onClick={() => cargarUsuarios()}>Siguiente</button>
+  </>)
 }

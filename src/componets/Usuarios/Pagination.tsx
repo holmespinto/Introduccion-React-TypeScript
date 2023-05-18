@@ -1,29 +1,30 @@
 // @flow
-import React from 'react';
 import { Usuario } from '../../interfaces/reqRes';
-interface Paginas{
+interface Paginas {
     tasksPerPage:number, 
     totalTasks:number,
     currentPage:number,
     usuarios:Array<Usuario>, 
+    loadPage:void, 
 }
 
 const Pagination = (props:Paginas) => {
-  const pageNumbers = [];
-
+  const pageNumbers = props.usuarios||[];
+/*
   for (let i = 1; i <= Math.ceil(props.totalTasks / props.tasksPerPage); i++) {
     pageNumbers.push(i);
   }
-
+*/
   return (
+   { /*
     <nav>
       <ul className="pagination">
         {pageNumbers.map((pageNumber) => (
           <li key={pageNumber} className="page-item">
-            {pageNumber<11?
+            {pageNumber.length<2?
             <button
               className="page-link"
-              //onClick={() => props.onPageChange(pageNumber)}
+              onClick={() => props.loadPage(pageNumber)}
               disabled={pageNumber === props.currentPage}
             >
               {pageNumber}
@@ -33,6 +34,7 @@ const Pagination = (props:Paginas) => {
         ))}
       </ul>
     </nav>
+            */}
   );
 };
 
